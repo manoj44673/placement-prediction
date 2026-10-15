@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+
+Student Placement Prediction
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="hero">
+
+    <h1>
+        Student Placement Prediction
+    </h1>
+
+    <p>
+        A dashboard for exploring the student placement dataset
+        and performing analysis.
+    </p>
+
+</div>
+
+
+<div class="card-grid">
+
+
+    <a href="{{ url_for('load_page') }}"
+       class="card">
+
+        <h2>
+            📥 Data Loading
+        </h2>
+
+        <p>
+            Load the raw dataset, clean it,
+            and preview rows & schema.
+        </p>
+
+    </a>
+
+
+    <a href="{{ url_for('eda_page') }}"
+       class="card">
+
+        <h2>
+            📊 Exploratory Data Analysis
+        </h2>
+
+        <p>
+            Summary statistics, correlations,
+            distributions, and charts.
+        </p>
+
+    </a>
+
+
+    <a href="{{ url_for('linear_regression_page') }}">
+       class="card">
+
+        <h2>
+            📈 Regression
+        </h2>
+
+        <p>
+            Simple linear, simple logistic,
+            and multi-model regression.
+        </p>
+
+    </a>
+
+
+    <a href="{{ url_for('models_page') }}" class="card">
+        <h2>🤖 Model Training</h2>
+        <p>Train and compare Logistic Regression, Decision Tree, Random Forest, and KNN.</p>
+    </a>
+
+  <a href="{{ url_for('predict') }}" class="card">
+        <h2>🔮 Predict</h2>
+        <p>Enter a student profile and get a placement prediction with probability.</p>
+    </a>
+
+
+</div>
+
+
+<div class="dataset-note">
+
+    <h2>
+        Dataset
+    </h2>
+
+    <p>
+
+        <strong>
+            Placement Prediction Dataset
+        </strong>
+
+        — 50,000 student records containing
+        academic, skill-test, and activity
+        features with the target column
+
+        <strong>
+            PlacementStatus
+        </strong>.
+
+    </p>
+
+</div>
+
+
+{% endblock %}

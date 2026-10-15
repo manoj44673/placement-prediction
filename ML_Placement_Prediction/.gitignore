@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+models/trained/*.joblib
+models/trained/metrics.json
+.idea/

@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Model Training{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>🤖 Model Training</h1>
+    <p>Classification models trained to predict student placement from academic and skill features.</p>
+</div>
+<div class="card">
+    <h2>Training Summary</h2>
+    <div class="dataset-info">
+        <div class="info-box"><h3>{{ results.samples }}</h3><p>Total Samples</p></div>
+        <div class="info-box"><h3>{{ results.train_samples }}</h3><p>Training Samples</p></div>
+        <div class="info-box"><h3>{{ results.test_samples }}</h3><p>Test Samples</p></div>
+        <div class="info-box"><h3>{{ results.best_model }}</h3><p>Best Model</p></div>
+        <div class="info-box"><h3>{{ results.best_accuracy }}</h3><p>Best Accuracy</p></div>
+    </div>
+</div>
+<div class="card">
+    <h2>Model Comparison</h2>
+    <div class="info-box">
+        <table><thead><tr><th>Model</th><th>Accuracy</th><th>Precision</th><th>Recall</th><th>F1</th></tr></thead>
+        <tbody>{% for item in results.models %}<tr><td>{{ item.model }}</td><td>{{ item.accuracy }}</td><td>{{ item.precision }}</td><td>{{ item.recall }}</td><td>{{ item.f1 }}</td></tr>{% endfor %}</tbody></table>
+    </div>
+</div>
+<div class="card">
+    <h2>Confusion Matrices</h2>
+    {% for item in results.models %}
+    <div class="info-box">
+        <h3>{{ item.model }}</h3>
+        <table><thead><tr><th></th><th>Predicted 0</th><th>Predicted 1</th></tr></thead>
+        <tbody><tr><th>Actual 0</th><td>{{ item.confusion_matrix[0][0] }}</td><td>{{ item.confusion_matrix[0][1] }}</td></tr>
+        <tr><th>Actual 1</th><td>{{ item.confusion_matrix[1][0] }}</td><td>{{ item.confusion_matrix[1][1] }}</td></tr></tbody></table>
+    </div>
+    {% endfor %}
+</div>
+<div class="card"><a class="button" href="{{ url_for('predict_page') }}">🔮 Go to Prediction</a></div>
+{% endblock %}

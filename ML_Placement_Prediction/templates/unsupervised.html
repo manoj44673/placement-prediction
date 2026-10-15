@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Unsupervised Learning{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>Unsupervised Learning</h1>
+  <p>Structure discovery in the placement dataset without using PlacementStatus, IsAnomaly, StudentID, or Salary Package as learning features.</p>
+
+  <div class="stats-grid">
+    <div class="card"><h3>Rows</h3><p>{{ results.n_rows }}</p></div>
+    <div class="card"><h3>Features Used</h3><p>{{ results.n_features }}</p></div>
+    <div class="card"><h3>Anomalies</h3><p>{{ results.anomaly.count }} ({{ results.anomaly.rate }}%)</p></div>
+    <div class="card"><h3>PCA Variance</h3><p>{{ results.pca.total_variance }}%</p></div>
+  </div>
+
+  <h2>K-Means Clustering</h2>
+  <p>Four operating/student-profile groups are discovered from standardized numeric features. Silhouette score: <b>{{ results.kmeans.silhouette }}</b>.</p>
+  <img class="analysis-img" src="{{ url_for('static', filename=results.kmeans.plot) }}" alt="K-Means clusters">
+  <p>Cluster sizes: {{ results.kmeans.counts }}</p>
+
+  <h2>Hierarchical Clustering</h2>
+  <p>Ward-linkage agglomerative clustering is run on a representative sample to keep memory usage practical.</p>
+  <img class="analysis-img" src="{{ url_for('static', filename=results.hierarchical.dendrogram) }}" alt="Hierarchical dendrogram">
+  <img class="analysis-img" src="{{ url_for('static', filename=results.hierarchical.plot) }}" alt="Hierarchical clusters">
+  <p>Silhouette score: <b>{{ results.hierarchical.silhouette }}</b> | Sample: {{ results.hierarchical.sample_size }}</p>
+
+  <h2>DBSCAN</h2>
+  <p>DBSCAN identifies dense groups and marks low-density observations as noise. It uses a bounded sample because density clustering can become expensive on very large datasets.</p>
+  <img class="analysis-img" src="{{ url_for('static', filename=results.dbscan.plot) }}" alt="DBSCAN clusters">
+  <p>Clusters: <b>{{ results.dbscan.clusters }}</b> | Noise: <b>{{ results.dbscan.noise }}</b> ({{ results.dbscan.noise_rate }}%) | Silhouette: <b>{{ results.dbscan.silhouette }}</b></p>
+
+  <h2>Dimensionality Reduction</h2>
+  <div class="two-col">
+    <div><h3>PCA</h3><p>PC1: {{ results.pca.variance_pc1 }}% | PC2: {{ results.pca.variance_pc2 }}%</p><img class="analysis-img" src="{{ url_for('static', filename=results.pca.plot) }}" alt="PCA"></div>
+    <div><h3>t-SNE</h3><p>Sample: {{ results.tsne.sample_size }}</p><img class="analysis-img" src="{{ url_for('static', filename=results.tsne.plot) }}" alt="t-SNE"></div>
+  </div>
+  <h3>UMAP</h3>
+  <p>{{ results.umap.status }}</p>
+  {% if results.umap.plot %}<img class="analysis-img" src="{{ url_for('static', filename=results.umap.plot) }}" alt="UMAP">{% endif %}
+
+  <h2>Anomaly Detection</h2>
+  <p>Isolation Forest flags the most unusual 2% of observations based on the unsupervised feature space.</p>
+  <img class="analysis-img" src="{{ url_for('static', filename=results.anomaly.plot) }}" alt="Anomaly scores">
+  <table>
+    <thead><tr><th>Student ID</th><th>Anomaly Score</th><th>CGPA</th><th>Attendance</th><th>Coding Score</th></tr></thead>
+    <tbody>
+    {% for row in results.anomaly.examples %}
+      <tr><td>{{ row.student_id }}</td><td>{{ row.score }}</td><td>{{ row.cgpa }}</td><td>{{ row.attendance }}</td><td>{{ row.coding }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>K-Means Cluster Profile</h2>
+  <div style="overflow-x:auto">
+    <table>
+      <thead><tr>{% for key in results.cluster_profile[0].keys() %}<th>{{ key }}</th>{% endfor %}</tr></thead>
+      <tbody>{% for row in results.cluster_profile %}<tr>{% for value in row.values() %}<td>{{ value }}</td>{% endfor %}</tr>{% endfor %}</tbody>
+    </table>
+  </div>
+
+  <h2>Features Used</h2>
+  <p>{{ results.features | join(', ') }}</p>
+</div>
+{% endblock %}
